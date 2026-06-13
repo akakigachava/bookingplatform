@@ -26,7 +26,7 @@
                 @foreach($services as $service)
                 <label class="service-card cursor-pointer">
                     <input type="radio" name="service_id" value="{{ $service->id }}"
-                           {{ old('service_id') == $service->id ? 'checked' : '' }}
+                           {{ (old('service_id', request('service_id')) == $service->id) ? 'checked' : '' }}
                            class="sr-only" onchange="onSelectionChange()">
                     <div class="border-2 border-gray-200 rounded-xl p-4 transition hover:border-[#b5708a] service-card-inner flex justify-between items-start">
                         <div>
@@ -47,7 +47,7 @@
                 @foreach($staff as $member)
                 <label class="cursor-pointer">
                     <input type="radio" name="staff_id" value="{{ $member->id }}"
-                           {{ old('staff_id') == $member->id ? 'checked' : '' }}
+                           {{ (old('staff_id', request('staff_id')) == $member->id) ? 'checked' : '' }}
                            class="sr-only" onchange="onSelectionChange()">
                     <div class="border-2 border-gray-200 rounded-xl p-3 text-center transition hover:border-[#b5708a] staff-card-inner">
                         <div class="w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center text-white font-bold text-lg"

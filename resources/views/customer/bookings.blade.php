@@ -85,6 +85,16 @@
                                 </button>
                             </form>
                         @endif
+
+                        @if($isPast || $appointment->status === 'completed')
+                            <a href="{{ route('book', ['service_id' => $appointment->service_id, 'staff_id' => $appointment->staff_id]) }}"
+                               class="text-xs font-medium px-3 py-1.5 rounded-lg border transition"
+                               style="color:#b5708a; border-color:#e8c4d4; background:rgba(181,112,138,0.06)"
+                               onmouseenter="this.style.background='rgba(181,112,138,0.12)'"
+                               onmouseleave="this.style.background='rgba(181,112,138,0.06)'">
+                                ↻ Book again
+                            </a>
+                        @endif
                     </div>
                 </div>
             </div>
