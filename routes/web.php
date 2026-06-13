@@ -37,6 +37,8 @@ Route::middleware(['auth', 'staff'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/appointments', [Admin\AppointmentController::class, 'index'])->name('appointments.index');
+    Route::get('/appointments/create', [Admin\AppointmentController::class, 'create'])->name('appointments.create');
+    Route::post('/appointments', [Admin\AppointmentController::class, 'store'])->name('appointments.store');
     Route::patch('/appointments/{appointment}/status', [Admin\AppointmentController::class, 'updateStatus'])->name('appointments.status');
 
     Route::get('/business-hours', [Admin\BusinessHourController::class, 'index'])->name('business-hours.index');

@@ -7,11 +7,21 @@
         <h2 class="text-lg font-semibold text-gray-900">Appointments</h2>
         <p class="text-sm text-gray-400 mt-0.5">View and manage all customer bookings.</p>
     </div>
-    @if($appointments->total() > 0)
-        <span class="text-xs font-semibold px-3 py-1.5 rounded-full bg-white border border-gray-200 text-gray-500 shadow-sm">
-            {{ $appointments->total() }} {{ Str::plural('booking', $appointments->total()) }}
-        </span>
-    @endif
+    <div class="flex items-center gap-3">
+        @if($appointments->total() > 0)
+            <span class="text-xs font-semibold px-3 py-1.5 rounded-full bg-white border border-gray-200 text-gray-500 shadow-sm">
+                {{ $appointments->total() }} {{ Str::plural('booking', $appointments->total()) }}
+            </span>
+        @endif
+        <a href="{{ route('admin.appointments.create') }}"
+           class="inline-flex items-center gap-1.5 text-white text-sm font-semibold px-4 py-2.5 rounded-xl shadow-sm transition hover:opacity-90 active:scale-95"
+           style="background:#b5708a">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+            </svg>
+            New Booking
+        </a>
+    </div>
 </div>
 
 {{-- Filter card --}}
@@ -31,8 +41,8 @@
         <div>
             <label class="block text-xs font-medium text-gray-500 mb-1.5">Status</label>
             <select name="status"
-                    class="border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:border-transparent transition"
-                    style="--tw-ring-color:#b5708a">
+                    class="border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-700 bg-white appearance-none pr-8 focus:outline-none focus:ring-2 focus:border-transparent transition cursor-pointer"
+                    style="--tw-ring-color:#b5708a; background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\"); background-repeat:no-repeat; background-position:right 10px center">
                 <option value="">All Statuses</option>
                 @foreach(['pending','confirmed','cancelled','completed'] as $s)
                     <option value="{{ $s }}" {{ request('status') === $s ? 'selected' : '' }}>
@@ -152,7 +162,8 @@
                             @csrf
                             @method('PATCH')
                             <select name="status" onchange="this.form.submit()"
-                                    class="text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 text-gray-600 bg-white focus:outline-none hover:border-gray-300 transition cursor-pointer">
+                                    class="text-xs font-medium border rounded-lg px-3 py-1.5 bg-white cursor-pointer appearance-none pr-7 focus:outline-none focus:ring-2 focus:border-transparent transition"
+                                    style="border-color:#e5e7eb; color:#374151; background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\"); background-repeat:no-repeat; background-position:right 8px center; --tw-ring-color:#b5708a">
                                 @foreach(['pending','confirmed','completed','cancelled'] as $s)
                                     <option value="{{ $s }}" {{ $appt->status === $s ? 'selected' : '' }}>
                                         {{ ucfirst($s) }}
