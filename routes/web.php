@@ -45,8 +45,7 @@ Route::middleware(['auth', 'staff'])->prefix('admin')->name('admin.')->group(fun
     // Admin-only routes
     Route::middleware('admin')->group(function () {
         Route::resource('services', Admin\ServiceController::class)->except(['show']);
-        // Staff CRUD — for teammate to implement
-        // Route::resource('staff', Admin\StaffController::class)->except(['show']);
+        Route::resource('staff', Admin\StaffController::class)->except(['show']);
     });
 });
 
