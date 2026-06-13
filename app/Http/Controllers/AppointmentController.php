@@ -130,6 +130,10 @@ class AppointmentController extends Controller
             return back()->with('error', 'This appointment cannot be cancelled.');
         }
 
+        if ($appointment->starts_at->diffInHours(now(), false) > -2) {
+            return back()->with('error', 'Cancellations must be made at least 2 hours before the appointment.');
+        }
+
         $appointment->update(['status' => 'cancelled']);
 
         return redirect()->route('customer.bookings')->with('success', 'Appointment cancelled.');

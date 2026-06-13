@@ -36,6 +36,7 @@
                 ];
                 $color = $statusColors[$appointment->status] ?? 'bg-gray-100 text-gray-600';
                 $isPast = $appointment->starts_at->isPast();
+                $withinNotice = $appointment->starts_at->diffInHours(now(), false) > -2;
             @endphp
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden
                         {{ $appointment->status === 'cancelled' ? 'opacity-60' : '' }}">
@@ -75,15 +76,21 @@
                         </span>
 
                         @if(in_array($appointment->status, ['pending', 'confirmed']) && !$isPast)
-                            <form method="POST" action="{{ route('appointments.cancel', $appointment) }}"
-                                  onsubmit="return confirm('Cancel this appointment?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                        class="text-xs text-red-500 hover:text-red-700 underline underline-offset-2">
-                                    Cancel
-                                </button>
-                            </form>
+                            @if($withinNotice)
+                                <span class="text-xs text-gray-400 italic">
+                                    Can't cancel within 2h
+                                </span>
+                            @else
+                                <form method="POST" action="{{ route('appointments.cancel', $appointment) }}"
+                                      onsubmit="return confirm('Cancel this appointment?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                            class="text-xs text-red-500 hover:text-red-700 underline underline-offset-2">
+                                        Cancel
+                                    </button>
+                                </form>
+                            @endif
                         @endif
 
                         @if($isPast || $appointment->status === 'completed')
