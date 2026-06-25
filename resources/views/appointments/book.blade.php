@@ -21,21 +21,33 @@
 
         {{-- Service --}}
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-            <label class="block text-sm font-semibold text-gray-700 mb-3">Service</label>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="service-grid">
-                @foreach($services as $service)
-                <label class="service-card cursor-pointer">
-                    <input type="radio" name="service_id" value="{{ $service->id }}"
-                           {{ (old('service_id', request('service_id')) == $service->id) ? 'checked' : '' }}
-                           class="sr-only" onchange="onSelectionChange()">
-                    <div class="border-2 border-gray-200 rounded-xl p-4 transition hover:border-[#b5708a] service-card-inner flex justify-between items-start">
-                        <div>
-                            <div class="font-medium text-gray-800 text-sm">{{ $service->name }}</div>
-                            <div class="text-xs text-gray-400 mt-0.5">{{ $service->duration_minutes }} min</div>
+            <label class="block text-sm font-semibold text-gray-700 mb-4">Service</label>
+            @php $grouped = $services->groupBy(fn($s) => $s->category ?: 'Other'); @endphp
+            <div class="space-y-5" id="service-grid">
+                @foreach($grouped as $category => $categoryServices)
+                    <div>
+                        <div class="flex items-center gap-2 mb-2.5">
+                            <span class="text-xs font-bold uppercase tracking-widest"
+                                  style="color:#b5708a">{{ $category }}</span>
+                            <div class="flex-1 h-px bg-gray-100"></div>
                         </div>
-                        <div class="font-bold text-gray-900 text-sm">R{{ number_format($service->price, 2) }}</div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            @foreach($categoryServices as $service)
+                            <label class="service-card cursor-pointer">
+                                <input type="radio" name="service_id" value="{{ $service->id }}"
+                                       {{ (old('service_id', request('service_id')) == $service->id) ? 'checked' : '' }}
+                                       class="sr-only" onchange="onSelectionChange()">
+                                <div class="border-2 border-gray-200 rounded-xl p-4 transition hover:border-[#b5708a] service-card-inner flex justify-between items-start">
+                                    <div>
+                                        <div class="font-medium text-gray-800 text-sm">{{ $service->name }}</div>
+                                        <div class="text-xs text-gray-400 mt-0.5">{{ $service->duration_minutes }} min</div>
+                                    </div>
+                                    <div class="font-bold text-gray-900 text-sm">R{{ number_format($service->price, 2) }}</div>
+                                </div>
+                            </label>
+                            @endforeach
+                        </div>
                     </div>
-                </label>
                 @endforeach
             </div>
         </div>

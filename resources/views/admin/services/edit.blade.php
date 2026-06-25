@@ -19,6 +19,18 @@
             </div>
 
             <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Category</label>
+                <select name="category"
+                        class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-700 bg-white appearance-none focus:outline-none focus:ring-2 focus:border-transparent transition"
+                        style="--tw-ring-color:#b5708a; background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\"); background-repeat:no-repeat; background-position:right 12px center">
+                    <option value="">— No category —</option>
+                    @foreach(['Hair', 'Beard', 'Nails', 'Skin', 'Spa', 'Other'] as $cat)
+                        <option value="{{ $cat }}" {{ old('category', $service->category) === $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1.5">Description</label>
                 <textarea name="description" rows="3"
                           class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm resize-none focus:outline-none focus:ring-2"

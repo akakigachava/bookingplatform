@@ -41,6 +41,7 @@
             <thead>
                 <tr style="background:#fafafa; border-bottom: 1px solid #f0eff0">
                     <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Service</th>
+                    <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Category</th>
                     <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Duration</th>
                     <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Price</th>
                     <th class="px-6 py-3.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
@@ -71,6 +72,18 @@
                                 @endif
                             </div>
                         </div>
+                    </td>
+
+                    {{-- Category --}}
+                    <td class="px-6 py-4">
+                        @if($service->category)
+                            <span class="inline-flex text-xs font-semibold px-2.5 py-1 rounded-full"
+                                  style="background:rgba(181,112,138,0.1); color:#b5708a">
+                                {{ $service->category }}
+                            </span>
+                        @else
+                            <span class="text-xs text-gray-300">—</span>
+                        @endif
                     </td>
 
                     {{-- Duration --}}

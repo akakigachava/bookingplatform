@@ -40,12 +40,12 @@ class DatabaseSeeder extends Seeder
 
         // Services
         Service::insert([
-            ['name' => 'Haircut',           'description' => 'Classic cut and style.',         'duration_minutes' => 45,  'price' => 150.00, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Hair Colour',        'description' => 'Full colour treatment.',          'duration_minutes' => 120, 'price' => 450.00, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Blow Dry',           'description' => 'Wash and blow dry.',             'duration_minutes' => 30,  'price' => 120.00, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Beard Trim',         'description' => 'Shape and trim beard.',          'duration_minutes' => 30,  'price' => 80.00,  'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Full Spa Package',   'description' => 'Facial, massage & manicure.',   'duration_minutes' => 180, 'price' => 850.00, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Manicure',           'description' => 'Nail shape, buff and polish.',  'duration_minutes' => 60,  'price' => 200.00, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Haircut',           'category' => 'Hair',  'description' => 'Classic cut and style.',         'duration_minutes' => 45,  'price' => 150.00, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Hair Colour',        'category' => 'Hair',  'description' => 'Full colour treatment.',          'duration_minutes' => 120, 'price' => 450.00, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Blow Dry',           'category' => 'Hair',  'description' => 'Wash and blow dry.',             'duration_minutes' => 30,  'price' => 120.00, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Beard Trim',         'category' => 'Beard', 'description' => 'Shape and trim beard.',          'duration_minutes' => 30,  'price' => 80.00,  'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Full Spa Package',   'category' => 'Spa',   'description' => 'Facial, massage & manicure.',   'duration_minutes' => 180, 'price' => 850.00, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Manicure',           'category' => 'Nails', 'description' => 'Nail shape, buff and polish.',  'duration_minutes' => 60,  'price' => 200.00, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
         ]);
 
         // Business hours: Mon–Sat open, Sunday closed

@@ -24,6 +24,7 @@ class ServiceController extends Controller
     {
         $validated = $request->validate([
             'name'             => 'required|string|max:255',
+            'category'         => 'nullable|string|max:100',
             'description'      => 'nullable|string',
             'duration_minutes' => 'required|integer|min:15|max:480',
             'price'            => 'required|numeric|min:0',
@@ -45,6 +46,7 @@ class ServiceController extends Controller
     {
         $validated = $request->validate([
             'name'             => 'required|string|max:255',
+            'category'         => 'nullable|string|max:100',
             'description'      => 'nullable|string',
             'duration_minutes' => 'required|integer|min:15|max:480',
             'price'            => 'required|numeric|min:0',
