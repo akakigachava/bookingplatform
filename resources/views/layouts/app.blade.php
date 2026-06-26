@@ -84,16 +84,6 @@
                                         My Bookings
                                     </a>
 
-                                    <div class="my-1 border-t border-gray-100"></div>
-
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button type="submit"
-                                            class="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-red-600 rounded-lg hover:bg-red-50 transition-colors text-left">
-                                            <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013 3v1"/></svg>
-                                            Log out
-                                        </button>
-                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -109,22 +99,37 @@
                 </div>
 
                 {{-- RIGHT: Nav links --}}
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center gap-2">
                     @auth
                         @if(auth()->user()->isAdmin() || auth()->user()->isStaff())
                             <a href="{{ route('admin.dashboard') }}"
-                               class="text-sm font-medium text-gray-600 hover:text-gray-900">Dashboard</a>
+                               class="text-sm font-medium text-gray-600 hover:text-gray-900 px-3 py-2 rounded-lg hover:bg-gray-50 transition">Dashboard</a>
                         @else
                             <a href="{{ route('customer.bookings') }}"
-                               class="text-sm font-medium text-gray-600 hover:text-gray-900">My Bookings</a>
+                               class="text-sm font-medium text-gray-600 hover:text-gray-900 px-3 py-2 rounded-lg hover:bg-gray-50 transition">My Bookings</a>
                         @endif
+
                         <a href="{{ route('book') }}"
-                           class="text-sm font-medium text-white px-4 py-2 rounded-lg transition"
+                           class="text-sm font-medium text-white px-4 py-2 rounded-lg transition hover:opacity-90"
                            style="background:#b5708a">Book Now</a>
+
+                        {{-- Visible logout button --}}
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit"
+                                    title="Sign out"
+                                    class="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-red-600 px-3 py-2 rounded-lg hover:bg-red-50 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                </svg>
+                                <span class="hidden sm:inline">Sign out</span>
+                            </button>
+                        </form>
                     @else
-                        <a href="{{ route('login') }}" class="text-sm font-medium text-gray-600 hover:text-gray-900">Log in</a>
+                        <a href="{{ route('login') }}" class="text-sm font-medium text-gray-600 hover:text-gray-900 px-3 py-2">Log in</a>
                         <a href="{{ route('register') }}"
-                           class="text-sm font-medium text-white px-4 py-2 rounded-lg transition"
+                           class="text-sm font-medium text-white px-4 py-2 rounded-lg transition hover:opacity-90"
                            style="background:#b5708a">Sign up</a>
                     @endauth
                 </div>
