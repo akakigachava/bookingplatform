@@ -15,26 +15,29 @@ class DatabaseSeeder extends Seeder
     {
         // Admin
         User::create([
-            'name'     => 'Admin',
-            'email'    => 'admin@bookease.com',
-            'password' => Hash::make('password'),
-            'role'     => 'admin',
+            'name'              => 'Admin',
+            'email'             => 'admin@bookease.com',
+            'password'          => Hash::make('password'),
+            'role'              => 'admin',
+            'email_verified_at' => now(),
         ]);
 
-        // Sample staff member
+        // Sample staff members
         $staffUser = User::create([
-            'name'     => 'Sarah Johnson',
-            'email'    => 'sarah@bookease.com',
-            'password' => Hash::make('password'),
-            'role'     => 'staff',
+            'name'              => 'Sarah Johnson',
+            'email'             => 'sarah@bookease.com',
+            'password'          => Hash::make('password'),
+            'role'              => 'staff',
+            'email_verified_at' => now(),
         ]);
         Staff::create(['user_id' => $staffUser->id, 'bio' => 'Senior stylist with 8 years of experience.', 'is_active' => true]);
 
         $staffUser2 = User::create([
-            'name'     => 'Mike Peters',
-            'email'    => 'mike@bookease.com',
-            'password' => Hash::make('password'),
-            'role'     => 'staff',
+            'name'              => 'Mike Peters',
+            'email'             => 'mike@bookease.com',
+            'password'          => Hash::make('password'),
+            'role'              => 'staff',
+            'email_verified_at' => now(),
         ]);
         Staff::create(['user_id' => $staffUser2->id, 'bio' => 'Specialises in colour and highlights.', 'is_active' => true]);
 

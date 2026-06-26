@@ -9,6 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->dropUnique('users_username_unique');
             $table->dropColumn('username');
         });
     }
