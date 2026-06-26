@@ -4,124 +4,140 @@
 {{-- Page header --}}
 <div class="flex items-center justify-between mb-6">
     <div>
-        <h2 class="text-lg font-semibold text-gray-900">Business Hours</h2>
-        <p class="text-sm text-gray-400 mt-0.5">Set the days and times customers can book appointments.</p>
+        <h2 class="font-bold" style="font-size:22px; color:#0b1c30;">Business Hours Configuration</h2>
+        <p class="text-sm mt-0.5" style="color:#514348;">Set your weekly operating times. Clients can only book within these hours.</p>
     </div>
 </div>
 
-{{-- Full-width card --}}
-<div class="bg-white rounded-2xl border border-gray-100 overflow-hidden"
-     style="box-shadow:0 1px 4px 0 rgba(0,0,0,0.06), 0 4px 16px 0 rgba(0,0,0,0.04)">
+<form method="POST" action="{{ route('admin.business-hours.update') }}">
+    @csrf
 
-    {{-- Card header --}}
-    <div class="flex items-center justify-between px-6 py-4" style="border-bottom:1px solid #f5f4f4">
-        <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:rgba(181,112,138,0.1)">
-                <svg class="w-4 h-4" style="color:#b5708a" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-            </div>
-            <span class="text-sm font-semibold text-gray-800">Weekly Schedule</span>
-        </div>
-        <span class="text-xs text-gray-400">Toggle days open or closed</span>
-    </div>
+    @php
+        $dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        $dayAbbr  = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+    @endphp
 
-    <form method="POST" action="{{ route('admin.business-hours.update') }}">
-        @csrf
-
-        @php
-            $dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-            $dayAbbr  = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-        @endphp
-
-        {{-- Column headers --}}
-        <div class="grid items-center gap-4 px-6 py-3 text-xs font-semibold uppercase tracking-wider text-gray-400"
-             style="grid-template-columns: 1fr 1fr 1fr auto; border-bottom:1px solid #f5f4f4; background:#fafafa">
-            <div>Day</div>
-            <div>Opens</div>
-            <div>Closes</div>
-            <div class="text-center w-16">Open</div>
-        </div>
-
-        {{-- Day rows --}}
+    <div class="space-y-3 mb-6">
         @foreach(range(0,6) as $day)
         @php $h = $hours->get($day); $isOpen = $h && $h->is_open; @endphp
 
-        <div class="grid items-center gap-4 px-6 py-4 transition-colors duration-150
-                    {{ $day < 6 ? '' : '' }}"
-             style="grid-template-columns: 1fr 1fr 1fr auto;
-                    border-bottom: {{ $day < 6 ? '1px solid #f5f4f4' : 'none' }};
-                    background: {{ $isOpen ? 'white' : '#fafafa' }}">
+        <div class="flex flex-col md:flex-row md:items-center gap-4 px-5 py-4 rounded-xl transition-all"
+             style="background:#ffffff; border:1px solid #d3e4fe; box-shadow:0 1px 4px rgba(0,0,0,0.03);"
+             id="day-row-{{ $day }}">
 
-            {{-- Day name --}}
-            <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold shrink-0"
+            {{-- Day avatar + name --}}
+            <div class="flex items-center gap-4 md:w-1/4">
+                <div class="w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
                      style="{{ $isOpen
-                         ? 'background:rgba(181,112,138,0.12); color:#b5708a;'
-                         : 'background:#f3f3f3; color:#aaa;' }}">
+                         ? 'background:#eddfe4; color:#864461;'
+                         : 'background:#f0eef0; color:#b0a8ac;' }}">
                     {{ $dayAbbr[$day] }}
                 </div>
                 <div>
-                    <div class="text-sm font-semibold {{ $isOpen ? 'text-gray-800' : 'text-gray-400' }}">
+                    <div class="font-semibold" style="font-size:15px; color:{{ $isOpen ? '#0b1c30' : '#b0a8ac' }};">
                         {{ $dayNames[$day] }}
                     </div>
                     @if(!$isOpen)
-                        <div class="text-xs text-gray-400">Closed</div>
+                        <div class="text-xs mt-0.5" style="color:#ba1a1a;">Closed</div>
+                    @else
+                        <div class="text-xs mt-0.5" style="color:#356253;">Open</div>
                     @endif
                 </div>
             </div>
 
-            {{-- Open time --}}
-            <input type="time" name="days[{{ $day }}][open_time]"
-                   value="{{ $h ? $h->open_time : '09:00' }}"
-                   class="border rounded-xl px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:border-transparent transition w-full max-w-[130px]
-                          {{ $isOpen ? 'border-gray-200' : 'border-gray-100 text-gray-300' }}"
-                   style="--tw-ring-color:#b5708a">
+            {{-- Times + toggle --}}
+            <div class="flex flex-wrap items-center gap-5 md:flex-1">
 
-            {{-- Close time --}}
-            <input type="time" name="days[{{ $day }}][close_time]"
-                   value="{{ $h ? $h->close_time : '18:00' }}"
-                   class="border rounded-xl px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:border-transparent transition w-full max-w-[130px]
-                          {{ $isOpen ? 'border-gray-200' : 'border-gray-100 text-gray-300' }}"
-                   style="--tw-ring-color:#b5708a">
+                {{-- Toggle --}}
+                <div class="flex items-center gap-3 px-3 py-1 rounded-full" style="background:#f8f9ff; border:1px solid #d6c1c7;">
+                    <span class="text-xs font-semibold uppercase tracking-wider"
+                          style="color:{{ $isOpen ? '#356253' : '#ba1a1a' }};">
+                        {{ $isOpen ? 'Open' : 'Closed' }}
+                    </span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox"
+                               name="days[{{ $day }}]"
+                               value="1"
+                               {{ $isOpen ? 'checked' : '' }}
+                               class="sr-only peer"
+                               onchange="updateDayRow({{ $day }}, this.checked)">
+                        <div class="w-11 h-6 rounded-full relative transition-colors duration-200"
+                             style="background:{{ $isOpen ? '#864461' : '#d6c1c7' }};"
+                             id="toggle-bg-{{ $day }}">
+                            <div class="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all duration-200"
+                                 style="left:{{ $isOpen ? 'calc(100% - 22px)' : '2px' }};"
+                                 id="toggle-dot-{{ $day }}"></div>
+                        </div>
+                    </label>
+                </div>
 
-            {{-- Toggle switch --}}
-            <div class="flex justify-center w-16">
-                <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox"
-                           name="days[{{ $day }}]"
-                           value="1"
-                           {{ $isOpen ? 'checked' : '' }}
-                           class="sr-only peer">
-                    <div class="w-10 h-6 rounded-full transition-colors duration-200 ease-in-out
-                                bg-gray-200 peer-checked:bg-[#b5708a]
-                                after:content-[''] after:absolute after:top-[3px] after:left-[3px]
-                                after:bg-white after:rounded-full after:h-[18px] after:w-[18px]
-                                after:shadow-sm after:transition-all after:duration-200
-                                peer-checked:after:translate-x-4
-                                relative">
+                {{-- Time inputs --}}
+                <div class="flex items-center gap-2">
+                    <div class="flex flex-col">
+                        <span class="text-xs font-semibold mb-1 uppercase tracking-wider" style="color:#847378;">Opens</span>
+                        <input type="time" name="days[{{ $day }}][open_time]"
+                               value="{{ $h ? $h->open_time : '09:00' }}"
+                               class="border rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent transition"
+                               style="border-color:#d6c1c7; color:{{ $isOpen ? '#0b1c30' : '#c0babb' }}; background:{{ $isOpen ? 'white' : '#fafafa' }}; --tw-ring-color:#864461;">
                     </div>
-                </label>
+                    <span class="mt-5 font-medium" style="color:#847378;">–</span>
+                    <div class="flex flex-col">
+                        <span class="text-xs font-semibold mb-1 uppercase tracking-wider" style="color:#847378;">Closes</span>
+                        <input type="time" name="days[{{ $day }}][close_time]"
+                               value="{{ $h ? $h->close_time : '18:00' }}"
+                               class="border rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent transition"
+                               style="border-color:#d6c1c7; color:{{ $isOpen ? '#0b1c30' : '#c0babb' }}; background:{{ $isOpen ? 'white' : '#fafafa' }}; --tw-ring-color:#864461;">
+                    </div>
+                </div>
             </div>
 
         </div>
         @endforeach
+    </div>
 
-        {{-- Save button --}}
-        <div class="px-6 py-5 flex items-center gap-3" style="border-top:1px solid #f5f4f4; background:#fafafa">
-            <button type="submit"
-                    class="inline-flex items-center gap-2 text-white text-sm font-semibold px-5 py-2.5 rounded-xl shadow-sm transition hover:opacity-90 active:scale-95"
-                    style="background:#b5708a">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M5 13l4 4L19 7"/>
-                </svg>
-                Save Business Hours
-            </button>
-            <span class="text-xs text-gray-400">Changes apply immediately to new bookings.</span>
-        </div>
-    </form>
-</div>
+    {{-- Save footer --}}
+    <div class="sticky bottom-4 flex justify-end gap-3 px-5 py-4 rounded-2xl backdrop-blur-sm"
+         style="background:rgba(248,249,255,0.85); border:1px solid #d3e4fe; box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+        <a href="{{ route('admin.business-hours.index') }}"
+           class="px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors"
+           style="color:#864461;"
+           onmouseenter="this.style.background='#eddfe4'"
+           onmouseleave="this.style.background=''">
+            Discard Changes
+        </a>
+        <button type="submit"
+                class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold text-white shadow-md transition hover:opacity-90 active:scale-95"
+                style="background:#864461;">
+            <span class="material-symbols-outlined" style="font-size:16px; font-variation-settings:'FILL' 1;">save</span>
+            Save Business Hours
+        </button>
+    </div>
+</form>
 
+<script>
+function updateDayRow(day, isOpen) {
+    const row    = document.getElementById('day-row-' + day);
+    const bg     = document.getElementById('toggle-bg-' + day);
+    const dot    = document.getElementById('toggle-dot-' + day);
+    const avatar = row.querySelector('.w-12');
+    const name   = row.querySelector('.font-semibold');
+    const label  = row.querySelector('.text-xs.mt-0\\.5');
+    const inputs = row.querySelectorAll('input[type="time"]');
+    const status = row.querySelector('.text-xs.font-semibold.uppercase');
+
+    bg.style.background  = isOpen ? '#864461' : '#d6c1c7';
+    dot.style.left       = isOpen ? 'calc(100% - 22px)' : '2px';
+    avatar.style.background = isOpen ? '#eddfe4' : '#f0eef0';
+    avatar.style.color      = isOpen ? '#864461' : '#b0a8ac';
+    name.style.color        = isOpen ? '#0b1c30' : '#b0a8ac';
+    label.textContent       = isOpen ? 'Open' : 'Closed';
+    label.style.color       = isOpen ? '#356253' : '#ba1a1a';
+    status.textContent      = isOpen ? 'Open' : 'Closed';
+    status.style.color      = isOpen ? '#356253' : '#ba1a1a';
+    inputs.forEach(input => {
+        input.style.color      = isOpen ? '#0b1c30' : '#c0babb';
+        input.style.background = isOpen ? 'white' : '#fafafa';
+    });
+}
+</script>
 </x-admin-layout>

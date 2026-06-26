@@ -5,181 +5,210 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'Admin' }} — {{ config('app.name', 'BookEase') }}</title>
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet"/>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased" style="background:#f9f8f7">
+<body class="font-sans antialiased" style="background:#f8f9ff; color:#0b1c30;" x-data="{ sidebarOpen: false }">
 
-<div class="flex h-screen overflow-hidden" x-data="{ sidebarOpen: false }">
+{{-- Mobile overlay --}}
+<div x-show="sidebarOpen"
+     x-transition:enter="transition-opacity ease-out duration-200"
+     x-transition:enter-start="opacity-0"
+     x-transition:enter-end="opacity-100"
+     x-transition:leave="transition-opacity ease-in duration-150"
+     x-transition:leave-start="opacity-100"
+     x-transition:leave-end="opacity-0"
+     @click="sidebarOpen = false"
+     class="fixed inset-0 z-30 lg:hidden"
+     style="background:rgba(0,0,0,0.4); display:none">
+</div>
 
-    {{-- ── Mobile overlay ────────────────────────────────────────────── --}}
-    <div x-show="sidebarOpen"
-         x-transition:enter="transition-opacity ease-out duration-200"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition-opacity ease-in duration-150"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         @click="sidebarOpen = false"
-         class="fixed inset-0 z-20 bg-black/30 backdrop-blur-sm lg:hidden"
-         style="display:none">
+{{-- ── Sidebar ──────────────────────────────────────────────────────────── --}}
+<aside class="fixed inset-y-0 left-0 z-40 flex flex-col w-64 transition-transform duration-200 ease-in-out"
+       style="background:#f8f9ff; border-right:1px solid #d6c1c7;"
+       :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
+
+    {{-- Logo --}}
+    <div class="h-16 flex items-center px-6 shrink-0" style="border-bottom:1px solid #d6c1c7;">
+        <a href="{{ route('home') }}" class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0"
+                 style="background:#a35c7a;">
+                <span class="material-symbols-outlined text-white"
+                      style="font-size:22px; font-variation-settings:'FILL' 1;">book_online</span>
+            </div>
+            <div>
+                <div class="font-bold leading-none" style="font-size:17px; color:#864461;">BookEase</div>
+                <div class="uppercase tracking-wider mt-0.5" style="font-size:9px; color:#514348; letter-spacing:0.08em;">Service Management</div>
+            </div>
+        </a>
     </div>
 
-    {{-- ── Sidebar ─────────────────────────────────────────────────────── --}}
-    <aside class="fixed inset-y-0 left-0 z-30 flex flex-col w-64 bg-white border-r border-gray-100
-                  transition-transform duration-200 ease-in-out
-                  lg:relative lg:translate-x-0 lg:flex lg:shrink-0"
-           :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
+    {{-- Nav --}}
+    <nav class="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
 
-        {{-- Logo --}}
-        <div class="h-16 flex items-center px-5 shrink-0" style="border-bottom:1px solid #f0eff0">
-            <a href="{{ route('home') }}" class="flex items-center gap-2.5 group">
-                <div class="w-8 h-8 rounded-xl flex items-center justify-center shadow-sm shrink-0"
-                     style="background: linear-gradient(135deg,#b5708a,#c98aa5)">
-                    <span class="text-white font-bold text-sm tracking-tight">B</span>
-                </div>
-                <div>
-                    <div class="text-sm font-bold text-gray-900 leading-none">BookEase</div>
-                    <div class="text-[10px] text-gray-400 leading-none mt-0.5">Admin Panel</div>
-                </div>
-            </a>
+        @php
+            $navItem = function(string $routeName, string $label, string $icon) {
+                $active = request()->routeIs($routeName . '*');
+                if ($active) {
+                    $cls   = 'flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors border-r-4';
+                    $style = 'color:#864461; background:#eddfe4; border-color:#864461';
+                    $iStyle = "font-size:20px; font-variation-settings:'FILL' 1";
+                    $hover = '';
+                } else {
+                    $cls   = 'flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors border-r-4 border-transparent';
+                    $style = 'color:#665c60';
+                    $iStyle = 'font-size:20px';
+                    $hover = ' onmouseenter="this.style.background=\'#eff4ff\'" onmouseleave="this.style.background=\'\'"';
+                }
+                return '<a href="' . route($routeName) . '" class="' . $cls . '" style="' . $style . '"' . $hover . '>'
+                    . '<span class="material-symbols-outlined" style="' . $iStyle . '">' . $icon . '</span>'
+                    . '<span>' . e($label) . '</span>'
+                    . '</a>';
+            };
+        @endphp
+
+        <div class="px-4 pb-1 pt-0.5">
+            <span class="uppercase tracking-widest" style="font-size:10px; font-weight:600; color:#d6c1c7;">Main</span>
         </div>
 
-        {{-- Nav --}}
-        <nav class="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+        {!! $navItem('admin.dashboard',          'Dashboard',      'dashboard') !!}
+        {!! $navItem('admin.appointments.index', 'Appointments',   'calendar_month') !!}
 
-            @php
-                $navItem = function(string $routeName, string $label, string $iconPath) {
-                    $active = request()->routeIs($routeName . '*');
-                    $base   = 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150 group';
-                    $state  = $active
-                        ? 'text-[#b5708a] bg-[#b5708a]/10'
-                        : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50';
-                    $icon   = '<svg class="w-4 h-4 shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="' . $iconPath . '"/>
-                               </svg>';
-                    return '<a href="' . route($routeName) . '" class="' . $base . ' ' . $state . '">'
-                        . $icon . '<span>' . e($label) . '</span>'
-                        . ($active ? '<span class="ml-auto w-1.5 h-1.5 rounded-full shrink-0" style="background:#b5708a"></span>' : '')
-                        . '</a>';
-                };
-            @endphp
+        @if(auth()->user()->isStaff() && !auth()->user()->isAdmin())
+            {!! $navItem('admin.schedule', 'My Schedule', 'checklist') !!}
+        @endif
 
-            <div class="px-2 pb-1 pt-0.5">
-                <span class="text-[10px] font-semibold uppercase tracking-widest text-gray-300">Main</span>
+        {!! $navItem('admin.customers.index', 'Customers', 'group') !!}
+
+        @if(auth()->user()->isAdmin())
+            <div class="px-4 pb-1 pt-3">
+                <span class="uppercase tracking-widest" style="font-size:10px; font-weight:600; color:#d6c1c7;">Admin</span>
             </div>
+            {!! $navItem('admin.services.index', 'Services', 'category') !!}
+            {!! $navItem('admin.staff.index',    'Staff',    'badge') !!}
+        @endif
 
-            {!! $navItem('admin.dashboard',    'Dashboard',
-                'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6') !!}
+        {!! $navItem('admin.business-hours.index', 'Business Hours', 'schedule') !!}
 
-            {!! $navItem('admin.appointments.index', 'Appointments',
-                'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z') !!}
+    </nav>
 
-            @if(auth()->user()->isStaff() && !auth()->user()->isAdmin())
-                {!! $navItem('admin.schedule', 'My Schedule',
-                    'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01') !!}
-            @endif
+    {{-- New Appointment CTA --}}
+    <div class="px-3 pb-3 shrink-0">
+        <a href="{{ route('admin.appointments.create') }}"
+           class="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold text-white shadow-md transition hover:opacity-90 active:scale-95"
+           style="background:#864461;">
+            <span class="material-symbols-outlined" style="font-size:18px; font-variation-settings:'FILL' 1;">add_circle</span>
+            New Appointment
+        </a>
+    </div>
 
-            {!! $navItem('admin.customers.index', 'Customers',
-                'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z') !!}
-
-            @if(auth()->user()->isAdmin())
-                <div class="px-2 pb-1 pt-3">
-                    <span class="text-[10px] font-semibold uppercase tracking-widest text-gray-300">Admin</span>
+    {{-- User section --}}
+    <div class="px-3 py-3 shrink-0" style="border-top:1px solid #d6c1c7;">
+        <div class="flex items-center gap-3 p-3 rounded-xl" style="background:#ffd9e5;">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+                 style="background:#864461;">
+                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="text-xs font-semibold truncate leading-tight" style="color:#3a0522;">
+                    {{ auth()->user()->name }}
                 </div>
-
-                {!! $navItem('admin.services.index', 'Services',
-                    'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2') !!}
-
-                {!! $navItem('admin.staff.index', 'Staff',
-                    'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z') !!}
-            @endif
-
-            {!! $navItem('admin.business-hours.index', 'Business Hours',
-                'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z') !!}
-
-        </nav>
-
-        {{-- User section --}}
-        <div class="px-3 py-4 shrink-0" style="border-top:1px solid #f0eff0">
-            <div class="flex items-center gap-3 px-2">
-                <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0
-                            text-white text-xs font-bold shadow-sm"
-                     style="background: linear-gradient(135deg,#b5708a,#c98aa5)">
-                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                <div class="capitalize leading-tight mt-0.5" style="font-size:10px; color:#70324e;">
+                    {{ auth()->user()->role }}
                 </div>
-                <div class="min-w-0 flex-1">
-                    <div class="text-sm font-semibold text-gray-800 truncate leading-tight">
+            </div>
+            <form method="POST" action="{{ route('logout') }}" class="shrink-0">
+                @csrf
+                <button type="submit" title="Log out"
+                        class="p-1.5 rounded-lg transition-colors"
+                        style="color:#864461;"
+                        onmouseenter="this.style.background='#ffb0ce'"
+                        onmouseleave="this.style.background=''">
+                    <span class="material-symbols-outlined" style="font-size:18px;">logout</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</aside>
+
+{{-- ── Main Content ──────────────────────────────────────────────────────── --}}
+<div class="lg:ml-64 flex flex-col min-h-screen">
+
+    {{-- Top header --}}
+    <header class="sticky top-0 z-30 flex items-center justify-between px-5 h-16 shrink-0"
+            style="background:#ffffff; border-bottom:1px solid #d3e4fe; box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+
+        {{-- Left: hamburger + search --}}
+        <div class="flex items-center gap-3 flex-1">
+            <button @click="sidebarOpen = !sidebarOpen"
+                    class="lg:hidden p-2 rounded-xl transition-colors"
+                    style="color:#514348;"
+                    onmouseenter="this.style.background='#eff4ff'"
+                    onmouseleave="this.style.background=''">
+                <span class="material-symbols-outlined" style="font-size:22px;">menu</span>
+            </button>
+            <div class="relative hidden md:block">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2"
+                      style="font-size:18px; color:#514348;">search</span>
+                <input type="text" placeholder="Search appointments, customers…"
+                       class="pl-9 pr-4 py-2 rounded-full text-sm border-0 w-72 focus:outline-none focus:ring-2 transition"
+                       style="background:#eff4ff; --tw-ring-color:#864461;">
+            </div>
+        </div>
+
+        {{-- Right: notifications + user --}}
+        <div class="flex items-center gap-1.5">
+            <button class="w-9 h-9 flex items-center justify-center rounded-full transition-colors"
+                    style="color:#514348;"
+                    onmouseenter="this.style.background='#eff4ff'"
+                    onmouseleave="this.style.background=''">
+                <span class="material-symbols-outlined" style="font-size:20px;">notifications</span>
+            </button>
+            <div class="w-px h-6 mx-1.5" style="background:#d6c1c7;"></div>
+            <div class="flex items-center gap-2.5">
+                <div class="text-right hidden sm:block">
+                    <div class="text-sm font-semibold leading-tight" style="color:#0b1c30;">
                         {{ auth()->user()->name }}
                     </div>
-                    <div class="text-[11px] text-gray-400 capitalize leading-tight mt-0.5">
+                    <div class="capitalize leading-tight" style="font-size:10px; color:#514348;">
                         {{ auth()->user()->role }}
                     </div>
                 </div>
-                <form method="POST" action="{{ route('logout') }}" class="shrink-0">
-                    @csrf
-                    <button type="submit" title="Log out"
-                            class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                        </svg>
-                    </button>
-                </form>
+                <div class="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0"
+                     style="background:#864461;">
+                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                </div>
             </div>
         </div>
-    </aside>
+    </header>
 
-    {{-- ── Content column ─────────────────────────────────────────────── --}}
-    <div class="flex-1 flex flex-col min-w-0 overflow-auto">
-
-        {{-- Mobile-only top bar --}}
-        <div class="lg:hidden flex items-center gap-3 px-4 h-14 bg-white shrink-0"
-             style="border-bottom:1px solid #f0eff0">
-            <button @click="sidebarOpen = !sidebarOpen"
-                    class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                </svg>
-            </button>
-            <div class="flex items-center gap-2">
-                <div class="w-6 h-6 rounded-lg flex items-center justify-center"
-                     style="background: linear-gradient(135deg,#b5708a,#c98aa5)">
-                    <span class="text-white font-bold text-xs">B</span>
-                </div>
-                <span class="font-semibold text-sm text-gray-900">BookEase</span>
-            </div>
+    {{-- Flash messages --}}
+    @if(session('success'))
+        <div class="mx-6 mt-4 flex items-center gap-3 px-4 py-3 rounded-xl text-sm"
+             style="background:#bcedda; color:#002118; border:1px solid #a0d1bf;">
+            <span class="material-symbols-outlined shrink-0" style="font-size:18px; color:#356253;">check_circle</span>
+            {{ session('success') }}
         </div>
+    @endif
 
-        {{-- Main content — no extra header bar, content starts here --}}
-        <main class="flex-1 px-6 py-6 lg:px-8 lg:py-7">
+    @if(session('error'))
+        <div class="mx-6 mt-4 flex items-center gap-3 px-4 py-3 rounded-xl text-sm"
+             style="background:#ffdad6; color:#93000a; border:1px solid #f9b4af;">
+            <span class="material-symbols-outlined shrink-0" style="font-size:18px; color:#ba1a1a;">error</span>
+            {{ session('error') }}
+        </div>
+    @endif
 
-            @if(session('success'))
-                <div class="mb-5 flex items-center gap-3 bg-green-50 border border-green-200
-                            text-green-800 px-4 py-3 rounded-xl text-sm">
-                    <svg class="w-4 h-4 shrink-0 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                    </svg>
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            @if(session('error'))
-                <div class="mb-5 flex items-center gap-3 bg-red-50 border border-red-200
-                            text-red-800 px-4 py-3 rounded-xl text-sm">
-                    <svg class="w-4 h-4 shrink-0 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                    </svg>
-                    {{ session('error') }}
-                </div>
-            @endif
-
-            {{ $slot }}
-
-        </main>
-    </div>
-
+    {{-- Page content --}}
+    <main class="flex-1 px-6 py-6 lg:px-8 lg:py-7">
+        {{ $slot }}
+    </main>
 </div>
+
 </body>
 </html>
