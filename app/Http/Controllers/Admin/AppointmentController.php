@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AppointmentConfirmation;
 use App\Models\Appointment;
 use App\Models\Service;
 use App\Models\Staff;
@@ -10,6 +11,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class AppointmentController extends Controller
@@ -90,7 +92,7 @@ class AppointmentController extends Controller
             return back()->withInput()->with('error', 'That time slot is already booked. Please choose another.');
         }
 
-        Appointment::create([
+        $appointment = Appointment::create([
             'customer_id' => $customer->id,
             'service_id'  => $request->service_id,
             'staff_id'    => $request->staff_id,
@@ -99,6 +101,16 @@ class AppointmentController extends Controller
             'status'      => 'confirmed',
             'notes'       => $request->notes,
         ]);
+
+        // Send confirmation email to registered customers (not walk-ins with placeholder emails)
+        if (!str_contains($customer->email, '@bookease.local')) {
+            try {
+                Mail::to($customer->email)
+                    ->send(new AppointmentConfirmation($appointment->load(['service', 'staff.user', 'customer'])));
+            } catch (\Exception) {
+                // Email failure must not break the booking
+            }
+        }
 
         return redirect()->route('admin.appointments.index')
             ->with('success', 'Appointment booked and confirmed.');
