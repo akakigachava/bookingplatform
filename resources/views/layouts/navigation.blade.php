@@ -22,14 +22,35 @@
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
-
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
+                        <button class="inline-flex items-center gap-2.5 px-2 py-1.5 border border-gray-200 rounded-xl bg-white hover:border-indigo-300 hover:shadow-sm focus:outline-none transition-all duration-150">
+                            {{-- Avatar circle --}}
+                            <div class="relative">
+                                @if(Auth::user()->avatar)
+                                    <img src="{{ asset('storage/' . Auth::user()->avatar) }}"
+                                         alt="{{ Auth::user()->name }}"
+                                         class="w-8 h-8 rounded-full object-cover ring-2 ring-white shadow-sm">
+                                @else
+                                    @php
+                                        $parts    = explode(' ', trim(Auth::user()->name));
+                                        $initials = strtoupper(mb_substr($parts[0] ?? '', 0, 1) . mb_substr($parts[1] ?? '', 0, 1));
+                                    @endphp
+                                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center ring-2 ring-white shadow-sm">
+                                        <span class="text-white text-xs font-bold leading-none">{{ $initials }}</span>
+                                    </div>
+                                @endif
+                                <span class="absolute bottom-0 right-0 w-2 h-2 bg-green-500 rounded-full border-2 border-white"></span>
                             </div>
+
+                            {{-- Name --}}
+                            <div class="text-left hidden sm:block">
+                                <p class="text-xs font-semibold text-gray-900 leading-tight">{{ Auth::user()->name }}</p>
+                                <p class="text-xs text-gray-400 leading-tight">{{ Auth::user()->email }}</p>
+                            </div>
+
+                            {{-- Chevron --}}
+                            <svg class="fill-current h-3.5 w-3.5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
                         </button>
                     </x-slot>
 
@@ -74,9 +95,24 @@
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+            <div class="px-4 flex items-center gap-3">
+                @if(Auth::user()->avatar)
+                    <img src="{{ asset('storage/' . Auth::user()->avatar) }}"
+                         alt="{{ Auth::user()->name }}"
+                         class="w-10 h-10 rounded-full object-cover ring-2 ring-indigo-100">
+                @else
+                    @php
+                        $parts    = explode(' ', trim(Auth::user()->name));
+                        $initials = strtoupper(mb_substr($parts[0] ?? '', 0, 1) . mb_substr($parts[1] ?? '', 0, 1));
+                    @endphp
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center ring-2 ring-indigo-100">
+                        <span class="text-white text-sm font-bold">{{ $initials }}</span>
+                    </div>
+                @endif
+                <div>
+                    <div class="font-semibold text-sm text-gray-900">{{ Auth::user()->name }}</div>
+                    <div class="text-xs text-gray-500">{{ Auth::user()->email }}</div>
+                </div>
             </div>
 
             <div class="mt-3 space-y-1">

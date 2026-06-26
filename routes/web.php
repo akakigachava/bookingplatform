@@ -10,23 +10,17 @@ use Illuminate\Support\Facades\Route;
 // Public
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Booking slots (auth required)
-Route::middleware('auth')->group(function () {
+// Booking + Profile (auth + verified required)
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/book', [AppointmentController::class, 'book'])->name('book');
     Route::get('/book/slots', [AppointmentController::class, 'availableSlots'])->name('book.slots');
     Route::post('/book', [AppointmentController::class, 'store'])->name('book.store');
 
     Route::get('/my-bookings', [AppointmentController::class, 'myBookings'])->name('customer.bookings');
     Route::delete('/appointments/{appointment}', [AppointmentController::class, 'cancel'])->name('appointments.cancel');
-});
 
-// Dashboard redirect
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-// Profile (Breeze)
-Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
