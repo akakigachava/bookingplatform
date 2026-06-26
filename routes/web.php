@@ -30,6 +30,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'staff'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
 
+    Route::get('/customers', [Admin\CustomerController::class, 'index'])->name('customers.index');
     Route::get('/appointments', [Admin\AppointmentController::class, 'index'])->name('appointments.index');
     Route::get('/appointments/create', [Admin\AppointmentController::class, 'create'])->name('appointments.create');
     Route::post('/appointments', [Admin\AppointmentController::class, 'store'])->name('appointments.store');

@@ -6,17 +6,24 @@ use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Models\Service;
 use App\Models\Staff;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
     public function index()
     {
+        $monthlyRevenue = Appointment::where('status', 'completed')
+            ->whereMonth('starts_at', now()->month)
+            ->whereYear('starts_at', now()->year)
+            ->join('services', 'appointments.service_id', '=', 'services.id')
+            ->sum('services.price');
+
         $stats = [
-            'today'    => Appointment::whereDate('starts_at', today())->count(),
-            'upcoming' => Appointment::where('starts_at', '>', now())
+            'today'     => Appointment::whereDate('starts_at', today())->count(),
+            'upcoming'  => Appointment::where('starts_at', '>', now())
                 ->whereIn('status', ['pending', 'confirmed'])->count(),
-            'services' => Service::where('is_active', true)->count(),
-            'staff'    => Staff::where('is_active', true)->count(),
+            'customers' => User::where('role', 'customer')->count(),
+            'revenue'   => $monthlyRevenue,
         ];
 
         $todayAppointments = Appointment::with(['customer', 'staff.user', 'service'])
