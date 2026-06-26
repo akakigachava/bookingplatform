@@ -71,6 +71,8 @@ Development followed this order:
 11. Staff schedule view
 12. Customer list with walk-in detection
 13. Full admin panel redesign (Material Design 3)
+14. Login and registration page redesign (split-screen layout)
+15. Email confirmation system
 
 Each feature was committed separately so the git history reflects the progression clearly.
 
@@ -80,16 +82,16 @@ Each feature was committed separately so the git history reflects the progressio
 
 | Akaki | Mariam Khetsuriani | Giorgi Ugulava |
 |---|---|---|
-| Laravel project setup and configuration | Admin panel UI/UX design | Email confirmation system |
-| Database schema and all migrations | HTML mockups for Dashboard, Appointments, Business Hours, and Services pages | Appointment confirmation Mailable |
-| All backend controllers and business logic | Material Design 3 color system and component design | Email templates |
-| Blade views for customer and admin flows | | Mailtrap integration and testing |
-| Role-based middleware and routing | | |
+| Laravel project setup and configuration | Admin panel UI/UX design and mockups | Email confirmation system |
+| Database schema and all migrations | HTML mockups for Dashboard, Appointments, Business Hours, and Services pages | Appointment confirmation Mailable and email templates |
+| All backend controllers and business logic | Material Design 3 color system and component design | Mailtrap integration and testing |
+| Blade views for customer and admin flows | Login and registration page design (split-screen layout) | Customer model — `appointments_count`, `last_appointment` relationships |
+| Role-based middleware and routing | | Business hours model and database seeding |
 | Slot availability algorithm | | |
 | Walk-in customer creation | | |
 | Cancellation enforcement | | |
 | Staff schedule view | | |
-| Integration of MD3 design into Laravel Blade templates | | |
+| Integration of MD3 design and login/register redesign into Laravel | | |
 | Bug fixes (migration conflicts, .env issues) | | |
 
 ---

@@ -91,8 +91,8 @@ database/
 | Name | Role |
 |---|---|
 | Akaki | Backend development, full feature implementation, admin panel |
-| Mariam Khetsuriani | UI/UX design, HTML mockups for admin panel redesign |
-| Giorgi Ugulava | Email confirmation system (Mailable, templates, Mailtrap) |
+| Mariam Khetsuriani | UI/UX design — admin panel mockups, MD3 design system, login/register page design |
+| Giorgi Ugulava | Email confirmation system (Mailable, templates, Mailtrap), customer model relations, business hours seeding |
 
 ---
 
