@@ -8,8 +8,12 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->isAdmin() || $user->isStaff()) {
+        if ($user->isAdmin()) {
             return redirect()->route('admin.dashboard');
+        }
+
+        if ($user->isStaff()) {
+            return redirect()->route('admin.schedule');
         }
 
         return redirect()->route('customer.bookings');

@@ -29,6 +29,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // Admin + Staff routes
 Route::middleware(['auth', 'staff'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/schedule', [Admin\ScheduleController::class, 'index'])->name('schedule');
 
     Route::get('/customers', [Admin\CustomerController::class, 'index'])->name('customers.index');
     Route::get('/appointments', [Admin\AppointmentController::class, 'index'])->name('appointments.index');
